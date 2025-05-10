@@ -1,0 +1,73 @@
+# Virtual Environment
+.venv/
+venv/
+env/
+ENV/
+
+# IDE and OS files
+.idea/
+.vscode/
+*.iml
+.DS_Store
+desktop.ini
+*.swp
+*.swo
+*~
+
+# Python cache files
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+
+# Build artifacts
+build/
+dist/
+*.egg-info/
+*.egg
+.eggs/
+pip-wheel-metadata/
+
+# Coverage reports
+.coverage
+.coverage.*
+coverage.xml
+htmlcov/
+.tox/
+.nox/
+.hypothesis/
+
+# Type checkers
+.mypy_cache/
+.dmypy.json
+dmypy.json
+.pytype/
+.pyre/
+
+# Testing
+.pytest_cache/
+.ruff_cache/
+.cache/
+
+# Documentation
+docs/_build/
+site/
+
+# Secrets and sensitive files
+.env
+.env.*
+secrets.json
+*.pem
+*.key
+
+# Database
+*.db
+*.sqlite3
+
+# Logs
+*.log
+logs/
+
+# Local development files
+.local/

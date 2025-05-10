@@ -1,0 +1,17 @@
+# Core development tools
+pip install \
+    ruff \
+    mypy \
+    pytest pytest-cov pytest-asyncio \
+    pre-commit \
+    pip-tools \
+    commitizen
+
+# Additional utilities (optional but recommended)
+pip install \
+    bandit \
+    safety \
+    prettier \
+    autopep8 \
+    docformatter \
+    types-requests types-setuptools

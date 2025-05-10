@@ -1,0 +1,19 @@
+# Create source directory structure
+mkdir -p src/project_name
+touch src/__init__.py
+touch src/project_name/__init__.py
+touch src/project_name/main.py
+
+# Create tests directory
+mkdir -p tests
+touch tests/__init__.py
+touch tests/test_example.py
+
+# Create documentation directory
+mkdir -p docs
+touch docs/README.md
+
+# Create other necessary files
+touch README.md
+touch LICENSE
+touch CHANGELOG.md
