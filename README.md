@@ -117,6 +117,8 @@ Install modern development tools with Ruff replacing Black, isort, and Flake8:
 pip install \
     ruff \
     mypy \
+    typer \
+    "click==8.1.8" \  # Pin click to 8.1.8 as a workaround for Typer (see note)
     pytest pytest-cov pytest-asyncio \
     pre-commit \
     pip-tools \
@@ -131,6 +133,10 @@ pip install \
     docformatter \
     types-requests types-setuptools
 ```
+Note on Typer/Click Versioning:
+As of May 2025, Typer (e.g., version 0.15.3+) has a known incompatibility with Click versions 8.2.0 and higher. This can lead to TypeErrors during help message generation (e.g., Parameter.make_metavar() missing 1 required positional argument: 'ctx') or when Click tries to format error messages. This issue has been observed on Python 3.11+ including Python 3.13.
+
+A common workaround, as discussed in the Typer community (e.g., GitHub issue #1215 for fastapi/typer), is to pin the click dependency to a version known to be compatible, such as click==8.1.8. Keep an eye on Typer's release notes for official fixes and updated Click compatibility (e.g., related to Typer PRs #1145, #1218).
 
 ## Step 5: Configure Tools via `pyproject.toml`
 
@@ -152,20 +158,30 @@ readme = "README.md"
 requires-python = ">=3.10"
 dependencies = [
     # Add your project dependencies here
+    # If Typer is a direct dependency of your project itself, add it here too:
+    # "typer>=0.15.3", # Or your target Typer version
+    # "click==8.1.8", # And the pinned Click version
 ]
 
 [project.optional-dependencies]
 dev = [
-    "ruff>=0.2.0",
-    "mypy>=1.7.0",
-    "pytest>=7.4.0",
-    "pytest-cov>=4.1.0",
-    "pytest-asyncio>=0.21.0",
-    "pre-commit>=3.6.0",
-    "pip-tools>=7.3.0",
-    "commitizen>=3.13.0",
-    "bandit>=1.7.6",
-    "safety>=2.4.0",
+    "ruff>=0.2.0",          # Linter/Formatter
+    "mypy>=1.7.0",          # Static Type Checker
+    "typer>=0.15.3",        # For CLIs (using your current version or a target one)
+    "click==8.1.8",         # Pinned version for Typer compatibility
+    "pytest>=7.4.0",        # Testing framework
+    "pytest-cov>=4.1.0",    # Test coverage
+    "pytest-asyncio>=0.21.0", # For testing async code with pytest
+    "pre-commit>=3.6.0",    # Git hooks manager
+    "pip-tools>=7.3.0",     # For dependency management (compiling requirements)
+    "commitizen>=3.13.0",   # For conventional commits
+    "bandit>=1.7.6",        # Security linter
+    "safety>=2.4.0",        # Checks for vulnerable dependencies
+    "prettier",             # Optional: if you still use it for non-Python files
+    "autopep8",             # Optional: if used for specific cases not covered by Ruff
+    "docformatter",         # Optional: if Ruff's docstring formatting isn't sufficient
+    "types-requests",       # Example: Stubs for type checking requests library
+    "types-setuptools",     # Example: Stubs for type checking setuptools
 ]
 
 # --- Tool Configurations ---
@@ -249,7 +265,7 @@ convention = "google"  # Use Google style docstrings
 "__init__.py" = ["F401"]  # Allow unused imports in __init__.py
 
 [tool.mypy]
-python_version = "3.10"
+python_version = "3.10" # Or your target Python version
 warn_return_any = true
 warn_unused_configs = true
 disallow_untyped_defs = true
@@ -264,7 +280,7 @@ strict_equality = true
 pretty = true
 show_column_numbers = true
 show_error_codes = true
-ignore_missing_imports = true
+ignore_missing_imports = true # Can be helpful initially
 
 # Exclude paths from mypy
 exclude = [
@@ -310,14 +326,15 @@ exclude_lines = [
 
 [tool.bandit]
 exclude_dirs = ["tests", "venv", ".venv"]
-skips = ["B101", "B601"]
+skips = ["B101", "B601"] # B101: assert_used, B601: paramiko_calls
 
 [tool.commitizen]
 name = "cz_conventional_commits"
-version = "0.1.0"
+version = "0.1.0" # This should match your [project] version
 tag_format = "v$version"
 version_files = [
     "pyproject.toml:version",
+     # "src/project_name/__init__.py:__version__" # If you store version in __init__.py too
 ]
 ```
 
@@ -329,8 +346,8 @@ Create `.pre-commit-config.yaml`:
 # .pre-commit-config.yaml
 repos:
   # Basic pre-commit hooks
-  - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v4.5.0
+  - repo: [https://github.com/pre-commit/pre-commit-hooks](https://github.com/pre-commit/pre-commit-hooks)
+    rev: v4.5.0 # Or your chosen version
     hooks:
       - id: trailing-whitespace
       - id: end-of-file-fixer
@@ -343,41 +360,41 @@ repos:
       - id: check-ast
 
   # Ruff linter and formatter (replaces Black, isort, Flake8)
-  - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.2.0
+  - repo: [https://github.com/astral-sh/ruff-pre-commit](https://github.com/astral-sh/ruff-pre-commit)
+    rev: v0.2.0 # Or your chosen version
     hooks:
       # Lint with Ruff
       - id: ruff
-        args: [ --fix ]
+        args: [ --fix, --exit-non-zero-on-fix ]
       # Format with Ruff
       - id: ruff-format
 
   # Type checking with mypy
-  - repo: https://github.com/pre-commit/mirrors-mypy
-    rev: v1.8.0
+  - repo: [https://github.com/pre-commit/mirrors-mypy](https://github.com/pre-commit/mirrors-mypy)
+    rev: v1.8.0 # Or your chosen version
     hooks:
       - id: mypy
         additional_dependencies: [types-all]
         args: [--config-file=pyproject.toml]
 
   # Security checks with bandit
-  - repo: https://github.com/PyCQA/bandit
-    rev: 1.7.6
+  - repo: [https://github.com/PyCQA/bandit](https://github.com/PyCQA/bandit)
+    rev: 1.7.6 # Or your chosen version
     hooks:
       - id: bandit
         args: [-c, pyproject.toml]
         additional_dependencies: ["bandit[toml]"]
 
   # Commit message linting
-  - repo: https://github.com/commitizen-tools/commitizen
-    rev: 3.13.0
+  - repo: [https://github.com/commitizen-tools/commitizen](https://github.com/commitizen-tools/commitizen)
+    rev: 3.13.0 # Or your chosen version
     hooks:
       - id: commitizen
         stages: [commit-msg]
 
   # Optional: Docstring formatter
-  - repo: https://github.com/PyCQA/docformatter
-    rev: v1.7.5
+  - repo: [https://github.com/PyCQA/docformatter](https://github.com/PyCQA/docformatter)
+    rev: v1.7.5 # Or your chosen version
     hooks:
       - id: docformatter
         args: [--in-place, --wrap-summaries=88, --wrap-descriptions=88]
@@ -444,11 +461,13 @@ Create a `requirements.txt` or use pip-tools for better dependency management:
 
 ```bash
 # Using pip-tools for dependency management
-pip-tools compile pyproject.toml
-pip-tools sync requirements.txt
+pip-tools compile --output-file requirements.txt pyproject.toml
+pip-tools compile --extra dev --output-file requirements-dev.txt pyproject.toml
+pip-tools sync requirements.txt requirements-dev.txt
 
-# Or create requirements.txt manually
-pip freeze > requirements.txt
+# Or create requirements.txt manually for runtime, and install dev tools separately
+# pip freeze > requirements.txt (for runtime)
+# pip install ruff mypy typer "click==8.1.8" pytest pytest-cov pytest-asyncio pre-commit pip-tools commitizen bandit safety #... (for dev)
 ```
 
 ## Step 10: Initial Commit
