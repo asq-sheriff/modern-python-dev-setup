@@ -1,17 +1,24 @@
-# Core development tools
-pip install \
-    ruff \
-    mypy \
-    pytest pytest-cov pytest-asyncio \
-    pre-commit \
-    pip-tools \
-    commitizen
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
 
-# Additional utilities (optional but recommended)
-pip install \
-    bandit \
-    safety \
-    prettier \
-    autopep8 \
-    docformatter \
-    types-requests types-setuptools
+[project]
+name = "{{ cookiecutter.project_slug }}"
+version = "0.1.0"
+description = "{{ cookiecutter.description }}"
+authors = [{ name = "{{ cookiecutter.author_name }}", email = "{{ cookiecutter.author_email }}" }]
+readme = "README.md"
+requires-python = ">= {{ cookiecutter.python_version }}"
+dependencies = [
+    # Add your project dependencies here
+]
+
+[project.optional-dependencies]
+dev = [
+    "pre-commit>=4.4.0",  # Git hooks manager
+    "ruff>=0.11.9",       # Linter/formatter
+    "mypy>=1.15.0",       # Static type checker
+    "bandit>=1.8.3",      # Security linter
+    "docformatter>=1.7.7",# Docstring formatter
+    "commitizen>=4.7.0"   # Conventional commits
+]

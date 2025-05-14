@@ -1,5 +1,10 @@
-# tests/test_main.py
-from src.my_package.main import greet
+"""
+Test suite for the greeting functionality.
+"""
+import pytest
+from {{ cookiecutter.project_slug }}.main import greet
+
 
 def test_greet():
-    assert greet("Developer") == "Hello, Developer"
+    """Ensure greet returns the expected string with an exclamation."""
+    assert greet("Developer") == "Hello, Developer!"

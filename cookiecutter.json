@@ -4,5 +4,11 @@
   "author_name": "Your Name",
   "author_email": "you@example.com",
   "description": "A short description of the project",
-  "python_version": "3.11"
+  "python_version": "3.11",
+  "pre_commit_hooks_rev": "v5.0.0",
+  "ruff_pre_commit_rev": "v0.11.9",
+  "mypy_rev": "v1.15.0",
+  "bandit_rev": "1.8.3",
+  "commitizen_rev": "v4.7.0",
+  "docformatter_rev": "v1.7.7"
 }
